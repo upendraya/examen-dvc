@@ -5,3 +5,32 @@ stages:
     - src/data/data_split.py
     outs:
     - data/processed/
+  normalize:
+    cmd: python src/data/normalize.py
+    deps:
+    - data/processed/
+    - src/data/normalize.py
+    outs:
+    - data/normalized/
+  train:
+    cmd: python src/models/training.py
+    deps:
+    - data/normalized/
+    - src/models/training.py
+    outs:
+    - models/model.pkl
+  grid_search:
+    cmd: python src/models/grid_search.py
+    deps:
+    - data/normalized/
+    - src/models/grid_search.py
+    outs:
+    - models/best_params.json
+  evaluate:
+    cmd: python src/models/evaluate.py
+    deps:
+    - models/model.pkl
+    - src/models/evaluate.py
+    metrics:
+    - metrics.json:
+        cache: false
