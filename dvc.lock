@@ -1,0 +1,33 @@
+schema: '2.0'
+stages:
+  split:
+    cmd: python src/data/data_split.py
+    deps:
+    - path: src/data/data_split.py
+      hash: md5
+      md5: 139705804af54c7a576ac7e16128cea6
+      size: 776
+    outs:
+    - path: data/processed/
+      hash: md5
+      md5: 46a0745dad9da73f3606bc2123f60862.dir
+      size: 330849
+      nfiles: 4
+  normalize:
+    cmd: python src/data/normalize.py
+    deps:
+    - path: data/processed/
+      hash: md5
+      md5: 46a0745dad9da73f3606bc2123f60862.dir
+      size: 330849
+      nfiles: 4
+    - path: src/data/normalize.py
+      hash: md5
+      md5: 65782bb1b8bfe3a2745cd76e6545a2c6
+      size: 1151
+    outs:
+    - path: data/normalized/
+      hash: md5
+      md5: f1230c218d740f6ba048d3a6335991fb.dir
+      size: 316591
+      nfiles: 4
