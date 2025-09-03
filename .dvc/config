@@ -1,4 +1,5 @@
 [core]
     remote = storage
+    autostage = false
 ['remote "storage"']
     url = https://dagshub.com/upendraya/examen-dvc.dvc
