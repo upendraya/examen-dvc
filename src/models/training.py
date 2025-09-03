@@ -1,24 +1,39 @@
-import pandas as pd
-from sklearn.linear_model import LogisticRegression
-import joblib
 import os
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
+import joblib
 
-# Load normalized data
-X_train = pd.read_csv("data/normalized/X_train.csv")
-X_test = pd.read_csv("data/normalized/X_test.csv")
-y_train = pd.read_csv("data/normalized/y_train.csv")
-y_test = pd.read_csv("data/normalized/y_test.csv")
+# Paths
+normalized_path = "data/normalized"
+model_path = "models"
 
-# Ensure target is 1D
-y_train = y_train.values.ravel()
-y_test = y_test.values.ravel()
+os.makedirs(model_path, exist_ok=True)
 
-# Train model
-model = LogisticRegression(max_iter=1000)
-model.fit(X_train, y_train)
+X_train_file = os.path.join(normalized_path, "X_train.csv")
+X_test_file  = os.path.join(normalized_path, "X_test.csv")
+y_train_file = os.path.join(normalized_path, "y_train.csv")
+y_test_file  = os.path.join(normalized_path, "y_test.csv")
+
+# Load data
+X_train = pd.read_csv(X_train_file)
+X_test  = pd.read_csv(X_test_file)
+y_train = pd.read_csv(y_train_file)
+y_test  = pd.read_csv(y_test_file)
+
+# Train a model
+model = RandomForestRegressor(n_estimators=100, random_state=42)
+model.fit(X_train, y_train.values.ravel())
+
+# Predictions
+y_pred = model.predict(X_test)
+
+# Evaluate
+mse = mean_squared_error(y_test, y_pred)
+print(f"Test MSE: {mse:.4f}")
 
 # Save model
-os.makedirs("models", exist_ok=True)
-joblib.dump(model, "models/model.pkl")
+model_file = os.path.join(model_path, "random_forest_model.pkl")
+joblib.dump(model, model_file)
 
-print("Model trained and saved to models/model.pkl")
+print(f"Model saved to {model_file}")
