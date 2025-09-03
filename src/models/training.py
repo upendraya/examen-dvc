@@ -16,7 +16,11 @@ y_test = pd.read_csv("data/normalized/y_test.csv")
 model = RandomForestRegressor(n_estimators=100, random_state=42)
 model.fit(X_train, y_train.values.ravel())  # y_train may need .values.ravel() for 1D
 
-# Save model
-joblib.dump(model, 'models/rf_model.pkl')
+# Save model as DVC expects
+joblib.dump(model, 'models/model.joblib')
 
-print("Training complete. Model saved in models/rf_model.pkl")
+# Optional: evaluate
+y_pred = model.predict(X_test)
+mse = ((y_test.values.ravel() - y_pred) ** 2).mean()
+print(f"Test MSE: {mse:.4f}")
+print("Model saved to models/model.joblib")
