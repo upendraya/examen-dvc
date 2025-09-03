@@ -1,32 +1,24 @@
-# src/models/training.py
-
 import pandas as pd
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
 import joblib
 import os
 
-# Create the models directory if it doesn't exist
-os.makedirs("models", exist_ok=True)
+# Load normalized data
+X_train = pd.read_csv("data/normalized/X_train.csv")
+X_test = pd.read_csv("data/normalized/X_test.csv")
+y_train = pd.read_csv("data/normalized/y_train.csv")
+y_test = pd.read_csv("data/normalized/y_test.csv")
 
-# Load normalized features
-X_train = pd.read_csv("data/normalized/X_train_scaled.csv")
-X_test = pd.read_csv("data/normalized/X_test_scaled.csv")
-
-# Load target labels
-y_train = pd.read_csv("data/processed/y_train.csv")
-y_test = pd.read_csv("data/processed/y_test.csv")
-
-# If y_train/y_test have a single column, convert to 1D arrays
+# Ensure target is 1D
 y_train = y_train.values.ravel()
 y_test = y_test.values.ravel()
 
-# Initialize and train the model
-model = LinearRegression()
+# Train model
+model = LogisticRegression(max_iter=1000)
 model.fit(X_train, y_train)
 
-# Save the trained model
+# Save model
+os.makedirs("models", exist_ok=True)
 joblib.dump(model, "models/model.pkl")
 
-print("Training complete. Model saved to models/model.pkl")
-
-
+print("Model trained and saved to models/model.pkl")
