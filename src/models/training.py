@@ -1,39 +1,22 @@
-import os
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error
 import joblib
+import os
 
-# Paths
-normalized_path = "data/normalized"
-model_path = "models"
+# Ensure models folder exists
+os.makedirs('models', exist_ok=True)
 
-os.makedirs(model_path, exist_ok=True)
+# Load normalized data
+X_train = pd.read_csv("data/normalized/X_train.csv")
+X_test = pd.read_csv("data/normalized/X_test.csv")
+y_train = pd.read_csv("data/normalized/y_train.csv")
+y_test = pd.read_csv("data/normalized/y_test.csv")
 
-X_train_file = os.path.join(normalized_path, "X_train.csv")
-X_test_file  = os.path.join(normalized_path, "X_test.csv")
-y_train_file = os.path.join(normalized_path, "y_train.csv")
-y_test_file  = os.path.join(normalized_path, "y_test.csv")
-
-# Load data
-X_train = pd.read_csv(X_train_file)
-X_test  = pd.read_csv(X_test_file)
-y_train = pd.read_csv(y_train_file)
-y_test  = pd.read_csv(y_test_file)
-
-# Train a model
+# Train RandomForest
 model = RandomForestRegressor(n_estimators=100, random_state=42)
-model.fit(X_train, y_train.values.ravel())
-
-# Predictions
-y_pred = model.predict(X_test)
-
-# Evaluate
-mse = mean_squared_error(y_test, y_pred)
-print(f"Test MSE: {mse:.4f}")
+model.fit(X_train, y_train.values.ravel())  # y_train may need .values.ravel() for 1D
 
 # Save model
-model_file = os.path.join(model_path, "random_forest_model.pkl")
-joblib.dump(model, model_file)
+joblib.dump(model, 'models/rf_model.pkl')
 
-print(f"Model saved to {model_file}")
+print("Training complete. Model saved in models/rf_model.pkl")
