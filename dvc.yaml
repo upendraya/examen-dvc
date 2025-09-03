@@ -1,0 +1,7 @@
+stages:
+  split:
+    cmd: python src/data/data_split.py
+    deps:
+    - src/data/data_split.py
+    outs:
+    - data/processed/
