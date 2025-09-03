@@ -1,23 +1,32 @@
+# src/models/training.py
+
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
+import joblib
 import os
 
-# Ensure models folder exists
-os.makedirs('models', exist_ok=True)
+# Create the models directory if it doesn't exist
+os.makedirs("models", exist_ok=True)
 
-# Load normalized data
-X_train = pd.read_csv('data/normalized/X_train.csv')
-X_test = pd.read_csv('data/normalized/X_test.csv')
-y_train = pd.read_csv('data/normalized/y_train.csv')
-y_test = pd.read_csv('data/normalized/y_test.csv')
+# Load normalized features
+X_train = pd.read_csv("data/normalized/X_train_scaled.csv")
+X_test = pd.read_csv("data/normalized/X_test_scaled.csv")
 
-# Train model
-model = RandomForestRegressor()
-model.fit(X_train, y_train.values.ravel())  # ensure correct shape
+# Load target labels
+y_train = pd.read_csv("data/processed/y_train.csv")
+y_test = pd.read_csv("data/processed/y_test.csv")
 
-# Save model
-import joblib
-joblib.dump(model, 'models/model.pkl')
+# If y_train/y_test have a single column, convert to 1D arrays
+y_train = y_train.values.ravel()
+y_test = y_test.values.ravel()
 
-print("Model training complete. Model saved in models/model.pkl")
+# Initialize and train the model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Save the trained model
+joblib.dump(model, "models/model.pkl")
+
+print("Training complete. Model saved to models/model.pkl")
+
 
