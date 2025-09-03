@@ -1,20 +1,32 @@
+# src/models/training.py
+
 import pandas as pd
-from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.linear_model import LinearRegression
 import joblib
 import os
 
-os.makedirs('models', exist_ok=True)
+# Create the models directory if it doesn't exist
+os.makedirs("models", exist_ok=True)
 
-# Load data
-X_train = pd.read_csv('data/processed/X_train_scaled.csv')
-y_train = pd.read_csv('data/processed/y_train.csv')
+# Load normalized features
+X_train = pd.read_csv("data/normalized/X_train_scaled.csv")
+X_test = pd.read_csv("data/normalized/X_test_scaled.csv")
 
-# Load best parameters
-best_params = joblib.load('models/best_params.pkl')
+# Load target labels
+y_train = pd.read_csv("data/processed/y_train.csv")
+y_test = pd.read_csv("data/processed/y_test.csv")
 
-# Train model
-model = GradientBoostingRegressor(**best_params)
-model.fit(X_train, y_train.values.ravel())
+# If y_train/y_test have a single column, convert to 1D arrays
+y_train = y_train.values.ravel()
+y_test = y_test.values.ravel()
 
-# Save trained model
-joblib.dump(model, 'models/gbr_model.pkl')
+# Initialize and train the model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Save the trained model
+joblib.dump(model, "models/model.pkl")
+
+print("Training complete. Model saved to models/model.pkl")
+
+
